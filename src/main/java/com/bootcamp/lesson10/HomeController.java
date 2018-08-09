@@ -39,6 +39,7 @@ public class HomeController {
             model.addAttribute("instructors", instructorRepository.findAll());
             return "courseform";
         }
+
         courseRepository.save(course);
         return "redirect:/";
     }

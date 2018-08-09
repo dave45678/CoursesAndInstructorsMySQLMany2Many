@@ -5,7 +5,9 @@
     <title>SpringBoot Lesson 10</title>
 </head>
 <body>
-    <div th:replace="base :: nav"></div>
+<a href="/">List All Courses</a> -
+<a href="/addInstructor">Add New Instructor</a> -
+<a href="/add">Add New Course</a>
     <form action="#"
           th:action="@{/processInstructor}"
           th:object="${instructor}"
