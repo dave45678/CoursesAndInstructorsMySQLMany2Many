@@ -1,8 +1,11 @@
-# Lesson 10 - Complete data life cycle – input, update, list, detail, delete
+# Lesson 10 Plus Instructors - Complete data life cycle – input, update, list, detail, delete for two tables using a one to many relationship
+
+### In this assignment we create an application that allows one instructor to teach many courses
+
 ## The Walkthrough
 
 1. Create a Spring Boot Application
-	* Name it SpringBoot_10
+	* Name it SpringBoot_10b
 	* Add the dependencies for web, thymeleaf, jpa and h2
 	* Hit next until you finish the wizard, and then wait until it's done.
 
@@ -35,7 +38,26 @@ public class Course {
     @JoinColumn(name = "instructor_id")
     private Instructor instructor;
 ```
+3. Autogenerate getters and setters
+  	* Right-click on the word Course and select generate -> Getters and Setters
+  	* Select all the fields list and click OK
 
+4. Create a Repository
+	* Right click on com.example.demo and click New -> Class
+	* Name it CourseRepository.java
+	* Edit it to look like this:
+
+```java
+import org.springframework.data.repository.CrudRepository;
+
+public interface CourseRepository extends CrudRepository<Course, Long>{
+}
+```
+
+5. Create a Class
+	* Right click on com.example.demo and click New -> Class
+	* Name it Instructor.java
+	* Edit it to look like this:
 
 ```java
 @Entity
@@ -53,49 +75,30 @@ public class Instructor {
             orphanRemoval = true)
     public Set<Course> courses;
 
-
 ```
 
-
-3. Autogenerate getters and setters
+6. Autogenerate getters and setters
   	* Right-click on the word Course and select generate -> Getters and Setters
   	* Select all the fields list and click OK
 
-4. Create a Repository
+7. Create a Repository
 	* Right click on com.example.demo and click New -> Class
-	* Name it CourseRepository.java
+	* Name it InstructorRepository.java
 	* Edit it to look like this:
 
 ```java
-import org.springframework.data.repository.CrudRepository;
-
-public interface CourseRepository extends CrudRepository<Course, Long>{
-}
-```
-```javax
 import org.springframework.data.repository.CrudRepository;
 
 public interface InstructorRepository extends CrudRepository<Instructor, Long> {
 }
 ```
 
-5. Create a Controller
+8. Create a Controller
 	* Right click on com.example.demo and click New -> Class
 	* Name it HomeController.java
 	* Edit it to look like this:
 
 ```java
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import javax.validation.Valid;
-
-
 @Controller
 public class HomeController {
 
@@ -165,7 +168,8 @@ public class HomeController {
 
 }
 ```
-6. Create a Template for the base.html page which will contain fragments of your other pages
+
+9. Create a Template for the base.html page which will contain fragments of your other pages
 
 ```Html
 <!DOCTYPE html>
@@ -187,7 +191,7 @@ public class HomeController {
 ```
 
 
-6. Create the course form
+10. Create the course form
   	* Right click on templates and click New -> Html
 	* Name it courseform.html
 	* Edit it to look like this:
@@ -197,10 +201,10 @@ public class HomeController {
 <html lang="en" xmlns:th="www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>SpringBoot Lesson 10</title>
+    <title>SpringBoot Lesson 10b</title>
 </head>
 <body>
-<div th:text="{$errormessage}"></div>
+<div th:text="${errormessage}"></div>
     <div th:replace="base :: nav"></div>
 
 <form action="#"
@@ -233,14 +237,14 @@ public class HomeController {
 </body>
 </html>
 ```
-7. Create the Instructor form
+11. Create the Instructor form
 
 ```java
 <!DOCTYPE html>
 <html lang="en" xmlns:th="www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>SpringBoot Lesson 10</title>
+    <title>SpringBoot Lesson 10b</title>
 </head>
 <body>
 <a href="/">List All Courses</a> -
@@ -262,7 +266,7 @@ public class HomeController {
 </html>
 
 ```
-6. Create a Template for the course listings
+12. Create a Template for the course listings
   	* Right click on templates and click New -> Html
 	* Name it list.html
 	* Edit it to look like this:
@@ -272,7 +276,7 @@ public class HomeController {
 <html lang="en" xmlns:th="www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>SpringBoot Lesson 10</title>
+    <title></title>
 </head>
 <body>
     <div th:replace="base :: nav"></div>
@@ -298,7 +302,7 @@ public class HomeController {
 </html>
 ```
 
-7. Create a template for course detail
+13. Create a template for course detail
   	* Right click on templates and click New -> Html
 	* Name it show.html
 	* Edit it to look like this:
@@ -308,7 +312,7 @@ public class HomeController {
 <html lang="en" xmlns:th="www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>SpringBoot Lesson 10</title>
+    <title>SpringBoot Lesson 10b</title>
 </head>
 <body>
 
@@ -322,7 +326,7 @@ public class HomeController {
 </html>
 ```
 
-8. Configure H2 to use the console
+14. Configure H2 to use the console
     * Configure H2
     * Open application.properties
     * Edit it to look like this:
@@ -334,12 +338,9 @@ spring.h2.console.path=/h2
 spring.jpa.hibernate.ddl-auto=create
 ```
 
-9. Run your application and open a browser, if you type in the URL http://localhost:8080/add you should see this:
-![Adding a course](https://github.com/ajhenley/unofficialguides/blob/master/IntroToSpringBoot/img/Lesson10b.png "Adding a course")
+15. Run your application and open a browser, if you type in the URL http://localhost:8080/add you should see a list of courses.
 
-10. If you enter values and submit the form, it will show you a list of all the jobs added so far. So, you should see a page that looks like this:
-![List of Courses](https://github.com/ajhenley/unofficialguides/blob/master/IntroToSpringBoot/img/Lesson10a.png "List of Courses")
-
+16. You can add a course or an instructor
 
 ## What is Going On
 
@@ -353,7 +354,6 @@ The annotations for validation should be familiar - these are used to determine 
 #### CrudRepository
 This acts as a pipeline to your database, automagically storing, modifying and retrieving data. Through the methods that CrudRepository makes available to you, you can instantly save, find one or all, and delete records by using very simple methods.
 
-[CrudRepository Methods](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html)
 
 ### The Controller
 This is where the action happens. Routes are mapped out for each action - Creating, Reading, Updating and Deleting data (CRUD).
@@ -388,7 +388,7 @@ The delete route follows the same pattern, but instead of showing the record, it
 
 ### The View
 
-This is an introduction to parameterised thymeleaf URLs. Sometimes you want to pass additional information to a URL so that you can perform operations on data. This option allows you to add paraemters to a route, so that the values that are passed can be used in your controller. You determine what these values are, and how they are processed.
+This is an introduction to parameterized Thymeleaf URLs. Sometimes you want to pass additional information to a URL so that you can perform operations on data. This option allows you to add paraemters to a route, so that the values that are passed can be used in your controller. You determine what these values are, and how they are processed.
 
 For more information about how to use parameters in URLs with Thymeleaf, see this page:
 [Parameters in URLS with Thymeleaf](http://www.thymeleaf.org/doc/articles/standardurlsyntax.html#adding-parameters)
@@ -396,14 +396,27 @@ For more information about how to use parameters in URLs with Thymeleaf, see thi
 #### courseform.html
 This is the form that allows users to add new courses. It is tied to the course model (th:object="${course}"), and has validation that uses the default error messaging for the fields that have been annotated in the model (e.g. title and instructor).
 
+#### How does the select work?
+
+The HTML select tag allows you to display a name but store a value. We use this to display the list of instructors but store the instructorId in the course form. Thymeleaf renders this tag from the instructors repository using a Thymeleaf loop (th:each).
+```html
+<select>
+  <option value="1">Dave</option>
+  <option value="2">Diem</option>
+  <option value="3">Alton</option>
+  <option value="4">Josh</option>
+</select>
+```
+
+
 #### list.html
-This form uses a thymeleaf loop (th:each) to show the details of each course that is passed in the courses object (a collection of course items) from the default route.
+This form uses a Thymeleaf loop (th:each) to show the details of each course that is passed in the courses object (a collection of course items) from the default route.
 
 It also includes links for updating, showing details of, and deleting listed courses using __URL PARAMETERS__ - so you have the potential to acces all your CRUD (Create Read Update Delete) operations in one form. The user will be re-directed to different routes when he/she clicks each link. Each one will allow the user to carry out the selected CRUD operation.
 
-It also allows users to add a new course by clicking the appopriate link towards the top of the page.
+It also allows users to add a new course by clicking the appropriate link towards the top of the page.
 
-Note that there is no thymeleaf action on this form - because the __anchor tag__ used has a thymeleaf attribute for the relevant route in your application. There is therefore no need to post the data with a button - you call a particular route instead.
+Note that there is no Thymeleaf action on this form - because the __anchor tag__ used has a thymeleaf attribute for the relevant route in your application. There is therefore no need to post the data with a button - you call a particular route instead.
 
 #### show.html
 This shows information for a single course, and has an option to delete the course, using its id as a __PARAMETER__ in the route to delete the item.
