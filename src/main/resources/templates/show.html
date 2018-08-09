@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>SpringBoot Lesson 10</title>
+</head>
+<body>
+
+    <div th:replace="base :: nav"></div>
+    Title: <span th:text="${course.title}"></span> <br/>
+    Instructor: <span th:text="${course.instructor.name}"></span> <br/>
+    Description: <p th:text="${course.description}"></p> <br/>
+    Credit: <span th:text="${course.credit}"></span> <br/>
+    <a th:href="@{/delete/{id}(id=${course.id})}">Delete this course</a>
+</body>
+</html>
