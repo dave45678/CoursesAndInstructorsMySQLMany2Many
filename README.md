@@ -344,15 +344,39 @@ spring.jpa.hibernate.ddl-auto=create
 
 ## What is Going On
 
-Congratulations on your first 'full' application! You can now add data to the database, as well as review, modify and delete it.
+We have modified the full application to include the more realistic situation of a database that contains multiple tables. Our database contains an instructor table and a course table. Each course record contains an instructor_id.    
 
-### Model
-The @Entity annotation tells your application that a table should be created in your database that has fields named after the variables in the class. Depending on the database you are using, the data types may have slightly different names, but they will be the best types for the kind of data you are working with, so you don't have to think about how the data is stored and retrieved. Remember your getters and setters! They are used to tell the database which values go where.
+()![https://res.cloudinary.com/dkoqxjnsr/image/upload/v1533847982/lesson10b_database_ptdru4.png]
 
-The annotations for validation should be familiar - these are used to determine whether the information input by the user is what is expected by the applicaition. If so, the data can be stored. If not, the view will indicate to the user where the problems are (for details, see the 'View' section), so they can be corrected.
 
-#### CrudRepository
-This acts as a pipeline to your database, automagically storing, modifying and retrieving data. Through the methods that CrudRepository makes available to you, you can instantly save, find one or all, and delete records by using very simple methods.
+The corresponding class in Spring Boot is course and it contains a instance of an Instructor class.
+
+```java
+@ManyToOne()
+private Instructor instructor;
+```
+
+The instructor table above does not contain any information about the course. We still have to tell Spring Boot that the classes are connected by including a collection of courses in the Instructor class. Teh @OneToMany annotation indicates that it is linked to the instructor field in hte Course class. The courses for a particular instructor will be stored in a collection called courses.
+
+```java
+@OneToMany(mappedBy = "instructor")
+public Set<Course> courses;
+```
+
+We can pass the courses to our thymeleaf page from the controller and display the instructor for each course using a technique known as "method chaining". Here we loop through each course and display the title followed by the name of the instructor from the instructor object that is part of the course class.
+
+```html
+<tr th:each="course : ${courses}">
+		<td th:text="${course.title}"></td>
+		<td th:text="${course.instructor.name}"></td>
+		<td th:text="${course.credit}"></td>
+		<td>
+				<a th:href="@{/update/{id}(id=${course.id})}">Update</a>
+				<a th:href="@{/detail/{id}(id=${course.id})}">Details</a>
+				<a th:href="@{/delete/{id}(id=${course.id})}">Delete</a>
+		</td>
+</tr>
+```
 
 
 ### The Controller
@@ -365,33 +389,12 @@ For CrudRepository, that would mean that you had to instantiate the object withi
 
 @Autowired tells the compiler to instantiate the repository object when the application runs, so you don’t have to type out that line so many times!
 
+
+We modify the Controller to add a reference to the instructor repository.
+
 #### The routes
 
 ##### Default Route (“/”)
-When the user visits this route, the user will see a list of all the course entries that have been made.
-This is because the model contains the result of the .findAll() method, which pulls all the data for a selected model from the database. This data is made available to the view as a variable named ("courses").
-
-#### Add route ("/add")
-When a user visits this route, a new instance of the Courses class will be created and passed to the view. This will hold all values that the user enters into the form and return them to the controller at the route specified on the form by the POST method.
-
-#### Process route ("/process")
-This route validates the course for errors, saves it to the database (using the CourseRepository object created by the @Autowired annotation), and redirects the user to the default route.
-
-#### Update route ("/update/{id}")
-When a user wants to modify a record, that user can retrieve the details of that record by opening up http://localhost/8080/update, and adding the ID of the user whose record is being modified. The {id} parameter in this case is a primary key that exists in the database, because there should be only one record that matches this criterion.
-
-The .findOne() method is used to pull up that record, and it is passed to the view as an object named "course".
-
-
-#### Delete
-The delete route follows the same pattern, but instead of showing the record, it is immediately deleted from the database. When the user is re-directed to the default route, this will show in the list that is displayed, as that record will not be shown in the list.
-
-### The View
-
-This is an introduction to parameterized Thymeleaf URLs. Sometimes you want to pass additional information to a URL so that you can perform operations on data. This option allows you to add paraemters to a route, so that the values that are passed can be used in your controller. You determine what these values are, and how they are processed.
-
-For more information about how to use parameters in URLs with Thymeleaf, see this page:
-[Parameters in URLS with Thymeleaf](http://www.thymeleaf.org/doc/articles/standardurlsyntax.html#adding-parameters)
 
 #### courseform.html
 This is the form that allows users to add new courses. It is tied to the course model (th:object="${course}"), and has validation that uses the default error messaging for the fields that have been annotated in the model (e.g. title and instructor).

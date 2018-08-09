@@ -18,9 +18,7 @@ public class Instructor {
     @Size(min=4)
     private String name;
 
-    @OneToMany(mappedBy = "instructor",
-            fetch = FetchType.EAGER,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "instructor")
     public Set<Course> courses;
 
     public long getId() {

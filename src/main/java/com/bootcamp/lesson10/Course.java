@@ -24,8 +24,7 @@ public class Course {
     @Min(3)
     private int credit;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "instructor_id")
+    @ManyToOne()
     private Instructor instructor;
 
     public long getId() {
